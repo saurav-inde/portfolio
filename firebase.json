@@ -8,6 +8,17 @@
     ],
     "frameworksBackend": {
       "region": "europe-west1"
-    }
+    },
+    "headers": [
+      {
+        "source": "/**/*.wasm",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/wasm"
+          }
+        ]
+      }
+    ]
   }
 }

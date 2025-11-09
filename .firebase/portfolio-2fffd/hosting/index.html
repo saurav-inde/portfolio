@@ -37,6 +37,86 @@
 </head>
 
 <body>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #121212;
+    }
+
+    #loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #121212;
+      color: #fff;
+      flex-direction: column;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #f4b907;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #f4b907;
+      letter-spacing: 0.5px;
+      transition: opacity 0.4s ease-in-out;
+    }
+  </style>
+  <!-- 👇 Custom loading indicator -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p id="loading-text">Loading assets...</p>
+  </div>
+
+  <script>
+    const messages = [
+      "Initializing Flutter engine...",
+      "Fetching widgets...",
+      "Building UI components...",
+      "Loading animations...",
+      "Connecting to backend...",
+      "Optimizing performance...",
+      "Almost ready..."
+    ];
+
+    const textEl = document.getElementById("loading-text");
+    let index = 0;
+
+    const changeText = () => {
+      textEl.style.opacity = 0;
+      setTimeout(() => {
+        textEl.textContent = messages[index];
+        textEl.style.opacity = 1;
+        index = (index + 1) % messages.length;
+      }, 400);
+    };
+
+    setInterval(changeText, 1000); // change every 1s
+
+    window.addEventListener("flutter-first-frame", function () {
+      document.getElementById("loading")?.remove();
+    });
+  </script>
+  <script src="load_wasm.js"></script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 
