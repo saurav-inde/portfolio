@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:portfolio/core/apptext.dart';
-import 'package:portfolio/presentation/widgets/aboutme.dart';
+import 'package:portfolio/presentation/widgets/contact.dart';
 import 'package:portfolio/presentation/widgets/expertise.dart';
+import 'package:portfolio/presentation/widgets/portfolio.dart';
 import 'package:portfolio/presentation/widgets/profilecard.dart';
 import 'package:portfolio/presentation/widgets/resume.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -19,8 +20,8 @@ class _HomepageState extends State<Homepage> {
   late String? selectedTab;
   @override
   void initState() {
-    currentSelectedWidget = Aboutme();
-    selectedTab = "About";
+    currentSelectedWidget = PortfolioScreen();
+    selectedTab = "Resume";
     super.initState();
   }
 
@@ -52,7 +53,10 @@ class _HomepageState extends State<Homepage> {
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProfileCard(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: ProfileCard(),
+                          ),
                           Expanded(child: _mainSection()),
                         ],
                       )
@@ -182,23 +186,6 @@ class _HomepageState extends State<Homepage> {
         spacing: 8,
         children: [
           TextButton(
-            style: selectedTab == "About"
-                ? ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                  )
-                : null,
-            onPressed: () {
-              setState(() {
-                currentSelectedWidget = Aboutme();
-                selectedTab = "About";
-              });
-            },
-            child: MediumText(
-              "About",
-              color: selectedTab == "About" ? Colors.black : Colors.white,
-            ),
-          ),
-          TextButton(
             style: selectedTab == "Expertise"
                 ? ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.amber),
@@ -223,7 +210,7 @@ class _HomepageState extends State<Homepage> {
                 : null,
             onPressed: () {
               setState(() {
-                currentSelectedWidget = Center(child: LargeText("Data center"));
+                currentSelectedWidget = PortfolioScreen();
                 selectedTab = "Projects";
               });
             },
@@ -247,6 +234,23 @@ class _HomepageState extends State<Homepage> {
             child: MediumText(
               "Resume",
               color: selectedTab == "Resume" ? Colors.black : Colors.white,
+            ),
+          ),
+          TextButton(
+            style: selectedTab == "Contact"
+                ? ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.amber),
+                  )
+                : null,
+            onPressed: () {
+              setState(() {
+                currentSelectedWidget = ContactForm();
+                selectedTab = "Contact";
+              });
+            },
+            child: MediumText(
+              "Contact",
+              color: selectedTab == "Contact" ? Colors.black : Colors.white,
             ),
           ),
         ],

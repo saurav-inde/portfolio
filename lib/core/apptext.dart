@@ -65,7 +65,7 @@ class MediumText extends StatelessWidget {
       style: TextStyle(
         fontFamily: 'Montserrat',
         fontSize: 14,
-        fontWeight: weight ?? FontWeight.w500,
+        fontWeight: weight ?? FontWeight.normal,
         color: color ?? Colors.white,
         letterSpacing: 0.3,
       ),

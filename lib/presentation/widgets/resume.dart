@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/apptext.dart';
 import 'package:portfolio/core/personal_details.dart';
+import 'package:portfolio/presentation/widgets/aboutme.dart';
 import 'package:portfolio/presentation/widgets/timeline.dart';
 
 class ResumeScreen extends StatelessWidget {
@@ -12,11 +13,17 @@ class ResumeScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          Align(alignment: Alignment.topLeft, child: HugeText('About Me')),
+          SizedBox(height: 16),
+
+          Aboutme(),
+          SizedBox(height: 32),
+          Align(alignment: Alignment.topLeft, child: HugeText('Experience')),
+          SizedBox(height: 16),
+
           CustomTimeline(
             children: [
-              Row(
-                children: [HugeText(align: TextAlign.start, '    Experience')],
-              ),
+              Row(children: [HugeText(align: TextAlign.start, '    ')]),
 
               for (var experience in experiences)
                 Container(

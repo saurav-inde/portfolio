@@ -5,7 +5,7 @@ class Aboutme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: 20, horizontal: 20),
+      padding: EdgeInsetsGeometry.symmetric(vertical: 0, horizontal: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

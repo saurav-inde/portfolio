@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:portfolio/core/apptext.dart';
 import 'package:portfolio/presentation/widgets/live_card.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileCard extends StatefulWidget {
   final bool isBottomBar;
@@ -60,10 +62,10 @@ class _ProfileCardState extends State<ProfileCard> {
                   _buildColumnLayout(shouldExpand)
                 else
                   _buildRowLayout(),
-      
+
                 // Expandable Content
                 if (shouldExpand) _buildExpandableContent(),
-      
+
                 // Expand/Collapse Arrow (only show on mobile)
                 if (!isDesktop && !widget.isBottomBar)
                   Icon(
@@ -149,6 +151,43 @@ class _ProfileCardState extends State<ProfileCard> {
         _contactRow(Icons.email_outlined, "EMAIL", "commerce.saurav@gmail.com"),
         const SizedBox(height: 16),
         _contactRow(Icons.phone_outlined, "PHONE", "+91 9625874470"),
+        SizedBox(height: 16),
+        const Divider(height: 1, color: Color(0xff2b2b2c)),
+        SizedBox(height: 16),
+
+        Row(
+          spacing: 16,
+          children: [
+            InkWell(
+              onTap: () {
+                launchUrl(Uri.parse('https://github.com/saurav-inde'));
+              },
+              child: SvgPicture.asset(
+                'assets/svg/social/github.svg',
+                color: Colors.white,
+                height: 16,
+              ),
+            ),
+            InkWell(
+              onTap: () {},
+              child: SvgPicture.asset(
+                'assets/svg/social/linkedin.svg',
+                height: 16,
+
+                color: Colors.white,
+              ),
+            ),
+            InkWell(
+              onTap: () {},
+              child: SvgPicture.asset(
+                'assets/svg/social/leetcode.svg',
+                height: 16,
+
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

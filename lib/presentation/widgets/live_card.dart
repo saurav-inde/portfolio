@@ -4,7 +4,11 @@ class LiveIndicatorCard extends StatefulWidget {
   final Widget child;
   final bool isBottom;
 
-  const LiveIndicatorCard({super.key, required this.child, this.isBottom = false});
+  const LiveIndicatorCard({
+    super.key,
+    required this.child,
+    this.isBottom = false,
+  });
 
   @override
   State<LiveIndicatorCard> createState() => _LiveIndicatorCardState();
@@ -20,7 +24,7 @@ class _LiveIndicatorCardState extends State<LiveIndicatorCard>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+    )..repeat(reverse: false);
   }
 
   @override
@@ -34,7 +38,7 @@ class _LiveIndicatorCardState extends State<LiveIndicatorCard>
     return Stack(
       children: [
         Container(
-          width: widget.isBottom ? 70  : 150,
+          width: widget.isBottom ? 70 : 150,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
@@ -53,22 +57,30 @@ class _LiveIndicatorCardState extends State<LiveIndicatorCard>
               return Transform.scale(
                 scale: scale,
                 child: Container(
-                  height: 16,
-                  width: 16,
+                  clipBehavior: Clip.none,
+                  height: 20 * (_controller.value),
+                  width: 20 * (_controller.value),
                   decoration: BoxDecoration(
-                    color: Color(0xff39ff14).withOpacity(opacity),
+                    color: Color(
+                      0xff39ff14,
+                    ).withAlpha(((1 - _controller.value * 0.8) * 255).toInt()),
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xff39ff14).withOpacity(0.5),
-                        blurRadius: 8 * _controller.value,
-                        spreadRadius: 2 * _controller.value,
-                      ),
-                    ],
                   ),
                 ),
               );
             },
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: Color(0xff39ff14),
+              shape: BoxShape.circle,
+            ),
           ),
         ),
       ],
