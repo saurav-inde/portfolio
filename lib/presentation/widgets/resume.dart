@@ -59,11 +59,11 @@ class ResumeScreen extends StatelessWidget {
         children: [
           MediumText(skill['designation'] ?? "", weight: FontWeight.bold),
           SizedBox(height: 4),
-          SmallText(skill['company'] ?? "", color: Color(0xffd6d6d6)),
+          MediumText(skill['company'] ?? "", color: Color(0xffd6d6d6)),
           SizedBox(height: 8),
-          SmallText(skill['workingPeriod'] ?? "", color: Colors.amber),
+          MediumText(skill['workingPeriod'] ?? "", color: Colors.amber),
           SizedBox(height: 4),
-          SmallText(skill['description'] ?? "", color: Color(0xffd6d6d6)),
+          MediumText(skill['description'] ?? "", color: Color(0xffd6d6d6)),
         ],
       ),
     );

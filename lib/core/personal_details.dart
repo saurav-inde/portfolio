@@ -54,8 +54,8 @@ final List<Map<String, dynamic>> skills = [
 
 final Map<String, dynamic> personalDetails = {
   "name": "Saurav Kumar",
-  "email": "sauravmiit@gmail.com",
-  "phone": "+91 9625874470",
+  "email": "commerce.saurav@gmail.com",
+  "phone": "+91 xxxxxxxxxx",
   "location": "Gurugram, India",
   "education": {
     "degree": "B.Tech in Electronics and Communication Engineering",

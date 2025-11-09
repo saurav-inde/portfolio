@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:portfolio/core/apptext.dart';
+import 'package:portfolio/core/portfolio_details.dart';
 
 class PortfolioScreen extends StatefulWidget {
   const PortfolioScreen({super.key});
@@ -11,57 +12,74 @@ class PortfolioScreen extends StatefulWidget {
 
 class _PortfolioScreenState extends State<PortfolioScreen> {
   String? shownProject = null;
+  Map<String, dynamic>? selectedProject = null;
+
   @override
   Widget build(BuildContext context) {
-    return shownProject != null
-        ? Center(child: projectDetailScreen())
-        : Center(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate the number of columns based on available width
-                final double availableWidth = constraints.maxWidth;
-                int crossAxisCount;
-                double cardWidth;
+    return WillPopScope(
+      onWillPop: () async {
+        if (shownProject != null) {
+          setState(() {
+            shownProject = null;
+            selectedProject = null;
+          });
+          return false; // prevent browser navigation
+        }
+        return true; // allow normal back if no project is shown
+      },
+      child: shownProject != null
+          ? Center(child: projectDetailScreen())
+          : Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // existing logic remains unchanged
+                  final double availableWidth = constraints.maxWidth;
+                  int crossAxisCount;
+                  double cardWidth;
 
-                if (availableWidth > 800) {
-                  crossAxisCount = 3;
-                  cardWidth =
-                      availableWidth / crossAxisCount -
-                      24; // accounting for spacing
-                } else if (availableWidth > 600) {
-                  crossAxisCount = 2;
-                  cardWidth = availableWidth / crossAxisCount - 20;
-                } else {
-                  crossAxisCount = 1;
-                  cardWidth = availableWidth - 16;
-                }
+                  if (availableWidth > 800) {
+                    crossAxisCount = 3;
+                    cardWidth = availableWidth / crossAxisCount - 24;
+                  } else if (availableWidth > 600) {
+                    crossAxisCount = 2;
+                    cardWidth = availableWidth / crossAxisCount - 20;
+                  } else {
+                    crossAxisCount = 1;
+                    cardWidth = availableWidth - 16;
+                  }
 
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Wrap(
-                      spacing: 12.0, // Horizontal space between cards
-                      runSpacing: 16.0, // Vertical space between cards
-                      alignment: WrapAlignment.start,
-                      children: List.generate(
-                        13,
-                        (index) => ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minWidth: cardWidth,
-                            maxWidth: cardWidth,
-                          ),
-                          child: projectCard(cardWidth: cardWidth),
-                        ),
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Wrap(
+                        spacing: 12.0,
+                        runSpacing: 16.0,
+                        alignment: WrapAlignment.start,
+                        children: projects.map((e) {
+                          return ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: cardWidth,
+                              maxWidth: cardWidth,
+                            ),
+                            child: projectCard(
+                              cardWidth: cardWidth,
+                              project: e,
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          );
+    );
   }
 
-  Widget projectCard({required double cardWidth}) {
+  Widget projectCard({
+    required double cardWidth,
+    required Map<String, dynamic> project,
+  }) {
     // Adjust content size based on card width
     double imageHeight = cardWidth * 0.75; // 4:3 aspect ratio
     // double titleSize = cardWidth * 0.06; // Responsive font size
@@ -79,10 +97,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             HoverImageWidget(
               width: cardWidth,
               height: imageHeight,
-              imagePath: 'assets/svg/ui.jpg',
+              imagePath: project['thumbnail'],
               onTap: () {
                 setState(() {
-                  shownProject = 'Dasho';
+                  shownProject = project['title'];
+                  selectedProject = project;
                 });
                 // Handle image view action
                 print('View project image');
@@ -94,12 +113,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             ), // Padding(
 
             SizedBox(height: 8),
-            MediumText('Dasho Platform'),
+            MediumText(project['title']),
             SizedBox(height: 4),
-            SmallText(
-              'All in one Delivery solution App for Parcel for Users, Stores and Delivery Partners',
-              color: Color(0xff9f9f9f),
-            ),
+            SmallText(project['description'], color: Color(0xff9f9f9f)),
           ],
         ),
       ),
@@ -112,10 +128,10 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MediumText(
-            """Virtual Ref is an AI-powered fitness application designed to enhance exercise performance and minimize injury risks. By leveraging real-time pose detection, it provides instant feedback to ensure users maintain proper form during workouts. """,
-            color: Color(0xffd6d6d6),
-          ),
+          SizedBox(height: 32),
+          HugeText(selectedProject!['title'] ?? ''),
+          SizedBox(height: 16),
+          MediumText(selectedProject!['briefDetail'] ?? ''),
 
           SizedBox(height: 32),
           LargeText("🛠️ Tech Stack & Tools"),
@@ -124,12 +140,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             spacing: 12,
             runSpacing: 12,
             children: [
-              skillWidget("Flutter"),
-              skillWidget("Dart"),
-              skillWidget("Typescript"),
-              skillWidget("C++"),
-              skillWidget("Javascript"),
-              skillWidget("Kotlin"),
+              ...(selectedProject!['techStack'] as List<String>).map(
+                (e) => skillWidget(e),
+              ),
             ],
           ),
 
@@ -139,23 +152,37 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
           Wrap(
             spacing: 12,
             // runSpacing: 12,
-            children: [projectHighlight(), projectHighlight()],
+            children: [
+              ...(selectedProject!['highlights'] as List<Map>).map(
+                (highlight) =>
+                    projectHighlight(highlight as Map<String, dynamic>),
+              ),
+            ],
           ),
           SizedBox(height: 32),
           LargeText("🔥 Key Features"),
           SizedBox(height: 16),
           Wrap(
             spacing: 12,
-            // runSpacing: 12,
-            children: [keyFeatures(), keyFeatures()],
+            runSpacing: 16,
+            children: [
+              ...(selectedProject!['keyFeatures'] as List).map(
+                (e) => keyFeatures(e),
+              ),
+            ],
           ),
           SizedBox(height: 32),
           LargeText("📦 Deliverables"),
           SizedBox(height: 80),
           Wrap(
             spacing: 12,
-            // runSpacing: 12,
-            children: [deliveribles(), deliveribles()],
+            runSpacing: 96,
+            children: [
+              ...(selectedProject!['deliverables'] as List<Map>).map(
+                (deliverible) =>
+                    deliveribles(deliverible as Map<String, dynamic>),
+              ),
+            ],
           ),
           SizedBox(height: 32),
         ],
@@ -163,7 +190,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     );
   }
 
-  Widget projectHighlight() {
+  Widget projectHighlight(Map<String, dynamic> highlight) {
     return LayoutBuilder(
       builder: (context, constraints) => Container(
         width: (MediaQuery.sizeOf(context).width > 700)
@@ -181,7 +208,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            LargeText('Real-time Form Analysis'),
+            LargeText(highlight['title']),
             SizedBox(height: 16),
             AspectRatio(
               aspectRatio: 1,
@@ -235,8 +262,8 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                 ),
                               ),
 
-                              ...[1, 2, 3].map(
-                                (e) => Row(
+                              ...(highlight['list'] as List<String>).map(
+                                (item) => Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
@@ -251,15 +278,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                       ),
                                     ),
                                     SizedBox(width: 12),
-                                    Expanded(
-                                      child: MediumText(
-                                        [
-                                          "Realtime Parcel Processing",
-                                          "Data Sync with Cache and Postgres",
-                                          "Real time tracking provided to User",
-                                        ][e - 1],
-                                      ),
-                                    ),
+                                    Expanded(child: MediumText(item)),
                                   ],
                                 ),
                               ),
@@ -273,41 +292,6 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 },
               ),
             ),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     ...[
-            //           "Deadlift: Hip hinge detection & posture correction",
-            //           "Squat: Depth tracking & stability monitoring",
-            //           "Bench Press: Bar path tracking & symmetry assessment",
-            //           "Instant Feedback: Real-time guidance during exercises",
-            //           "Rep Counting: Precision-based repetition tracking",
-            //         ]
-            //         .map((e) => MediumText(e))
-            //         .expand(
-            //           (element) => [
-            //             Row(
-            //               crossAxisAlignment: CrossAxisAlignment.center,
-            //               mainAxisSize: MainAxisSize.min,
-            //               children: [
-            //                 Container(
-            //                   height: 8,
-            //                   width: 8,
-            //                   decoration: BoxDecoration(
-            //                     color: Colors.white,
-            //                     shape: BoxShape.circle,
-            //                   ),
-            //                 ),
-            //                 SizedBox(width: 12),
-            //                 Expanded(child: element),
-            //               ],
-            //             ),
-            //             SizedBox(height: 8),
-            //           ],
-            //         )
-            //         .toList(),
-            //   ],
-            // ),
           ],
         ),
       ),
@@ -338,7 +322,7 @@ Widget skillWidget(String skill) {
   );
 }
 
-Widget keyFeatures() {
+Widget keyFeatures(Map<String, dynamic> feature) {
   return LayoutBuilder(
     builder: (context, constraints) => Container(
       width: (MediaQuery.sizeOf(context).width > 700)
@@ -356,18 +340,12 @@ Widget keyFeatures() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          LargeText('⏱️  Real-time Form Analysis'),
+          LargeText(feature['title']),
           SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...[
-                    "Deadlift: Hip hinge detection & posture correction",
-                    "Squat: Depth tracking & stability monitoring",
-                    "Bench Press: Bar path tracking & symmetry assessment",
-                    "Instant Feedback: Real-time guidance during exercises",
-                    "Rep Counting: Precision-based repetition tracking",
-                  ]
+              ...(feature['list'] as List<String>)
                   .map((e) => MediumText(e))
                   .expand(
                     (element) => [
@@ -399,7 +377,7 @@ Widget keyFeatures() {
   );
 }
 
-Widget deliveribles() {
+Widget deliveribles(Map<String, dynamic> deliverable) {
   return Stack(
     clipBehavior: Clip.none,
     children: [
@@ -420,18 +398,12 @@ Widget deliveribles() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              LargeText('Android Application'),
+              LargeText(deliverable['title']),
               SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...[
-                        "Deadlift: Hip hinge detection & posture correction",
-                        "Squat: Depth tracking & stability monitoring",
-                        "Bench Press: Bar path tracking & symmetry assessment",
-                        "Instant Feedback: Real-time guidance during exercises",
-                        "Rep Counting: Precision-based repetition tracking",
-                      ]
+                  ...(deliverable['list'])
                       .map((e) => MediumText(e))
                       .expand(
                         (element) => [
@@ -461,25 +433,28 @@ Widget deliveribles() {
           ),
         ),
       ),
-      Positioned(
-        top: -50,
-        left: 32,
-        child: Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 245, 245, 245),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.all(16),
-          child: SvgPicture.asset(
-            'assets/svg/android-development.svg',
+      if (deliverable['icon'] != null && deliverable['icon']! != '')
+        Positioned(
+          top: -50,
+          left: 32,
+          child: Container(
             width: 80,
             height: 80,
-            colorFilter: ColorFilter.mode(Color(0xff3ddc84), BlendMode.srcIn),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 245, 245, 245),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.all(16),
+            child: SvgPicture.asset(
+              'assets/svg/${deliverable['icon']}',
+              width: 80,
+              height: 80,
+              colorFilter: deliverable['icon'].contains('android')
+                  ? ColorFilter.mode(Color(0xff3ddc84), BlendMode.srcIn)
+                  : null,
+            ),
           ),
         ),
-      ),
     ],
   );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:portfolio/core/apptext.dart';
+import 'package:portfolio/presentation/widgets/skill_widget.dart';
 import 'package:portfolio/presentation/widgets/timeline.dart';
 
 class ExpertiseScreen extends StatelessWidget {
@@ -157,7 +158,7 @@ class ExpertiseScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: CustomTimeline(
         children: [
-          HugeText('    Expert Skills'),
+          HugeText(''),
           for (var entry in technicalSkills.entries)
             Container(
               width: double.infinity,
@@ -170,7 +171,7 @@ class ExpertiseScreen extends StatelessWidget {
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
-                    children: [...entry.value.map((e) => skillWidget(e))],
+                    children: [...entry.value.map((e) => SkillWidget(e))],
                   ),
                 ],
               ),
@@ -180,26 +181,4 @@ class ExpertiseScreen extends StatelessWidget {
     );
   }
 
-  Widget skillWidget(String skill) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Color(0xff2b2b2c),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            'assets/svg/${skill.toLowerCase().replaceAll(' ', '-')}.svg',
-            height: 16,
-            width: 16,
-            errorBuilder: (context, error, stackTrace) => SizedBox.shrink(),
-          ),
-          SizedBox(width: 8),
-          MediumText(skill),
-        ],
-      ),
-    );
-  }
 }

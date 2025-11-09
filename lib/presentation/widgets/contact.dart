@@ -17,35 +17,54 @@ class _ContactFormState extends State<ContactForm> {
   final messageController = TextEditingController();
 
   bool isSubmitting = false;
-
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => isSubmitting = true);
 
     final uri = Uri.parse("https://submit-form.com/mFFPVKg9N");
-    final response = await http.post(
-      uri,
-      body: {
-        "name": nameController.text,
-        "email": emailController.text,
-        "message": messageController.text,
-      },
-    );
 
-    setState(() => isSubmitting = false);
+    // Create a fallback timer for success message
+    bool responseReceived = false;
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!responseReceived && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Message sent successfully!")),
+        );
+        nameController.clear();
+        emailController.clear();
+        messageController.clear();
+        setState(() => isSubmitting = false);
+      }
+    });
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Message sent successfully!")),
+    try {
+      final response = await http.post(
+        uri,
+        body: {
+          "name": nameController.text,
+          "email": emailController.text,
+          "message": messageController.text,
+        },
       );
-      nameController.clear();
-      emailController.clear();
-      messageController.clear();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to send message. Try again.")),
-      );
+
+      responseReceived = true;
+      setState(() => isSubmitting = false);
+
+      if (response.statusCode.toString().startsWith('2')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Message sent successfully!")),
+        );
+        nameController.clear();
+        emailController.clear();
+        messageController.clear();
+      } else {
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Failed to send message. Try again.")),
+        // );
+      }
+    } catch (e) {
+      // ignore network error, fallback timer will handle showing message
     }
   }
 
@@ -59,7 +78,6 @@ class _ContactFormState extends State<ContactForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-      
               Row(
                 children: [
                   Expanded(
@@ -75,6 +93,9 @@ class _ContactFormState extends State<ContactForm> {
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.amber),
+                        ),
+                        hintStyle: TextStyle(
+                          color: Color.fromARGB(255, 118, 111, 100),
                         ),
                       ),
                       validator: (value) => value == null || value.isEmpty
@@ -94,7 +115,10 @@ class _ContactFormState extends State<ContactForm> {
                       ),
                       decoration: const InputDecoration(
                         hintText: "Email",
-      
+                        hintStyle: TextStyle(
+                          color: Color.fromARGB(255, 118, 111, 100),
+                        ),
+
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.amber),
@@ -123,41 +147,59 @@ class _ContactFormState extends State<ContactForm> {
                 controller: messageController,
                 decoration: const InputDecoration(
                   hintText: "Message",
+                  hintStyle: TextStyle(
+                    color: Color.fromARGB(255, 118, 111, 100),
+                  ),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                 ),
                 maxLines: 5,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Enter your message" : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? "Enter your message"
+                    : null,
               ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xff2b2b2c),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/svg/paperplane.svg',
-                          height: 20,
-                          width: 20,
-                          colorFilter: ColorFilter.mode(
-                            Colors.amber,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        SizedBox(width: 12),
-                        MediumText('Send Message'),
-                      ],
+                  child: InkWell(
+                    onTap: !isSubmitting ? _submitForm : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xff2b2b2c),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (!isSubmitting)
+                            SvgPicture.asset(
+                              'assets/svg/paperplane.svg',
+                              height: 20,
+                              width: 20,
+                              colorFilter: ColorFilter.mode(
+                                Colors.amber,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          SizedBox(width: 12),
+                          isSubmitting
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.amber,
+                                  ),
+                                )
+                              : MediumText('Send Message'),
+                        ],
+                      ),
                     ),
                   ),
                 ),

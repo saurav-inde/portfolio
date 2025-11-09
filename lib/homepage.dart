@@ -21,7 +21,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     currentSelectedWidget = PortfolioScreen();
-    selectedTab = "Resume";
+    selectedTab = "Portfolio";
     super.initState();
   }
 
@@ -29,59 +29,72 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final ValueNotifier<bool> fabVisible = ValueNotifier(true);
 
-    return SafeArea(
-      top: false,
-      child: Scaffold(
-        backgroundColor: const Color(0xff121212),
-        body: NotificationListener<UserScrollNotification>(
-          onNotification: (notification) {
-            if (notification.direction == ScrollDirection.reverse) {
-              // User scrolled down → hide FAB
-              if (fabVisible.value) fabVisible.value = false;
-            } else if (notification.direction == ScrollDirection.forward) {
-              // User scrolled up → show FAB
-              if (!fabVisible.value) fabVisible.value = true;
-            }
-            return true;
-          },
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints.loose(Size(1300, double.infinity)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ResponsiveBreakpoints.of(context).isDesktop
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: ProfileCard(),
-                          ),
-                          Expanded(child: _mainSection()),
-                        ],
-                      )
-                    : Column(children: [Expanded(child: _mainSection())]),
+    return WillPopScope(
+      onWillPop: () async {
+        if (selectedTab != 'Portfolio') {
+          setState(() {
+            selectedTab = 'Portfolio';
+            currentSelectedWidget = PortfolioScreen();
+          });
+          return false; // prevent actual navigation
+        }
+        return true; // allow normal back if already in portfolio
+      },
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: const Color(0xff121212),
+          body: NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+              if (notification.direction == ScrollDirection.reverse) {
+                // User scrolled down → hide FAB
+                if (fabVisible.value) fabVisible.value = false;
+              } else if (notification.direction == ScrollDirection.forward) {
+                // User scrolled up → show FAB
+                if (!fabVisible.value) fabVisible.value = true;
+              }
+              return true;
+            },
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints.loose(Size(1300, double.infinity)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ResponsiveBreakpoints.of(context).isDesktop
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: ProfileCard(),
+                            ),
+                            Expanded(child: _mainSection()),
+                          ],
+                        )
+                      : Column(children: [Expanded(child: _mainSection())]),
+                ),
               ),
             ),
           ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: ResponsiveBreakpoints.of(context).isDesktop
-            ? null
-            : ValueListenableBuilder<bool>(
-                valueListenable: fabVisible,
-                builder: (context, visible, _) {
-                  return AnimatedSlide(
-                    duration: const Duration(milliseconds: 250),
-                    offset: visible ? Offset.zero : const Offset(0, 2),
-                    child: AnimatedOpacity(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: ResponsiveBreakpoints.of(context).isDesktop
+              ? null
+              : ValueListenableBuilder<bool>(
+                  valueListenable: fabVisible,
+                  builder: (context, visible, _) {
+                    return AnimatedSlide(
                       duration: const Duration(milliseconds: 250),
-                      opacity: visible ? 1 : 0,
-                      child: _navbar(true),
-                    ),
-                  );
-                },
-              ),
+                      offset: visible ? Offset.zero : const Offset(0, 2),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: visible ? 1 : 0,
+                        child: _navbar(true),
+                      ),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -186,24 +199,7 @@ class _HomepageState extends State<Homepage> {
         spacing: 8,
         children: [
           TextButton(
-            style: selectedTab == "Expertise"
-                ? ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.amber),
-                  )
-                : null,
-            onPressed: () {
-              setState(() {
-                currentSelectedWidget = ExpertiseScreen();
-                selectedTab = "Expertise";
-              });
-            },
-            child: MediumText(
-              "Expertise",
-              color: selectedTab == "Expertise" ? Colors.black : Colors.white,
-            ),
-          ),
-          TextButton(
-            style: selectedTab == "Projects"
+            style: selectedTab == "Portfolio"
                 ? ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.amber),
                   )
@@ -211,12 +207,12 @@ class _HomepageState extends State<Homepage> {
             onPressed: () {
               setState(() {
                 currentSelectedWidget = PortfolioScreen();
-                selectedTab = "Projects";
+                selectedTab = "Portfolio";
               });
             },
             child: MediumText(
-              "Projects",
-              color: selectedTab == "Projects" ? Colors.black : Colors.white,
+              "Portfolio",
+              color: selectedTab == "Portfolio" ? Colors.black : Colors.white,
             ),
           ),
           TextButton(
@@ -236,6 +232,24 @@ class _HomepageState extends State<Homepage> {
               color: selectedTab == "Resume" ? Colors.black : Colors.white,
             ),
           ),
+          TextButton(
+            style: selectedTab == "Expertise"
+                ? ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.amber),
+                  )
+                : null,
+            onPressed: () {
+              setState(() {
+                currentSelectedWidget = ExpertiseScreen();
+                selectedTab = "Expertise";
+              });
+            },
+            child: MediumText(
+              "Expertise",
+              color: selectedTab == "Expertise" ? Colors.black : Colors.white,
+            ),
+          ),
+
           TextButton(
             style: selectedTab == "Contact"
                 ? ButtonStyle(
