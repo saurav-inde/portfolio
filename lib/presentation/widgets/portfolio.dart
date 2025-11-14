@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:portfolio/core/apptext.dart';
 import 'package:portfolio/core/portfolio_details.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PortfolioScreen extends StatefulWidget {
   const PortfolioScreen({super.key});
@@ -128,7 +131,25 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 32),
+          if (selectedProject!['liveOnPlay'] != null) ...[
+            SizedBox(height: 32),
+
+            GestureDetector(
+              onTap: () {
+                openInNewTab(selectedProject!['liveOnPlay']);
+              },
+              child: Row(
+                children: [
+                  Image.asset("assets/svg/play.png", height: 32),
+                  SizedBox(width: 16),
+                  Icon(Icons.open_in_new, size: 32, color: Colors.amber),
+                ],
+              ),
+            ),
+            SizedBox(height: 16),
+          ] else
+            SizedBox(height: 32),
+
           HugeText(selectedProject!['title'] ?? ''),
           SizedBox(height: 16),
           MediumText(selectedProject!['briefDetail'] ?? ''),
@@ -296,6 +317,26 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> openInNewTab(String url) async {
+    if (kIsWeb) {
+      // On web, url_launcher supports webOnlyWindowName to open a new tab
+      final bool launched = await launchUrlString(
+        url,
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: '_blank',
+      );
+      if (!launched) {
+        throw 'Could not launch $url';
+      }
+    } else {
+      // On mobile / desktop, open externally (browser)
+      final uri = Uri.parse(url);
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw 'Could not launch $url';
+      }
+    }
   }
 }
 

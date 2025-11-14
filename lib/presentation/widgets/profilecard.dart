@@ -139,7 +139,7 @@ class _ProfileCardState extends State<ProfileCard>
                       child: LiveIndicator(
                         color: Colors.green.shade700,
                         radius: 4,
-                        spreadRadius: 8,
+                        spreadRadius: 12,
                         spreadDuration: const Duration(seconds: 1),
                         waitDuration: const Duration(seconds: 1),
                         child: SizedBox.shrink(),
@@ -177,8 +177,8 @@ class _ProfileCardState extends State<ProfileCard>
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            'https://thumbs.dreamstime.com/b/gamer-portrait-video-games-background-glitch-style-player-vector-illustration-online-user-163082367.jpg?w=992',
+          child: Image.asset(
+            'assets/svg/profile.jpg',
             fit: BoxFit.cover,
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               return AnimatedOpacity(

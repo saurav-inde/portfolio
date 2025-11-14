@@ -7,6 +7,8 @@ const projects = [
         "Lead Full Stack Developer for Logizee Solutions LLP's flagship multi-role delivery and marketplace application",
     "briefDetail":
         "As Technical Lead, architected and developed a comprehensive parcel delivery system with integrated marketplace, serving businesses, delivery partners, and customers through a single unified application. Led a cross-functional team to deliver a scalable solution handling real-time tracking, driver assignment, and multi-role workflows.",
+    "liveOnPlay":
+        "https://play.google.com/store/apps/details?id=com.logizee.connect_it.dasho&pcampaignid=web_share",
     "techStack": [
       "Node.js",
       "Flutter",
@@ -112,6 +114,8 @@ const projects = [
         "A Flutter-based password and encrypted notes manager with AES-256 encryption, Firebase authentication, and Firestore backups — built with Clean Architecture, BLoC, and native Kotlin Autofill integration for seamless password management.",
     "briefDetail":
         "PassMan is a secure password management application developed for Android and iOS, designed to store and organize user credentials, private notes, and autofill data safely. It combines Flutter’s cross-platform capabilities with native Kotlin integration for system-level Autofill and Autosave services. Leveraging AES-256 encryption for local data security, Firebase Authentication for identity management, and Firestore for encrypted backups, PassMan ensures both usability and uncompromising security through Clean Architecture principles.",
+    "liveOnPlay":
+        "https://play.google.com/store/apps/details?id=com.xceed.passman&pcampaignid=web_share",
     "techStack": [
       "Flutter",
       "Dart",
@@ -249,6 +253,8 @@ const projects = [
         "Creator and Lead Developer of Spindle — a custom-built fidget spinner simulator and social gaming experience, developed entirely in Flutter with a Node.js backend and real-time multiplayer dashboard.",
     "briefDetail":
         "Spindle is an interactive fidget spinner experience that merges calming visuals with competitive play. Built entirely in Flutter without external game engines, it features a live multiplayer leaderboard, in-app store, AdMob integration, and a reward currency system based on spins and referrals. The backend, developed in Node.js with PostgreSQL and JWT authentication, handles user data, leaderboards, and in-game transactions. Designed for smooth performance, visual delight, and scalable multiplayer logic, Spindle combines mindfulness with engagement through a futuristic theme.",
+    "liveOnPlay":
+        "https://play.google.com/store/apps/details?id=com.xceed.fidx&pcampaignid=web_share",
     "techStack": [
       "Flutter",
       "Dart",
