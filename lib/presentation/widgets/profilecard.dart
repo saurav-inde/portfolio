@@ -130,7 +130,24 @@ class _ProfileCardState extends State<ProfileCard>
               return AnimatedOpacity(
                 duration: const Duration(milliseconds: 500),
                 opacity: frame == null ? 0 : 1,
-                child: LiveIndicatorCard(child: child),
+                child: Stack(
+                  children: [
+                    child,
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: LiveIndicator(
+                        color: Colors.green.shade700,
+                        radius: 4,
+                        spreadRadius: 8,
+                        spreadDuration: const Duration(seconds: 1),
+                        waitDuration: const Duration(seconds: 1),
+                        child: SizedBox.shrink(),
+                      ),
+                    ),
+                  ],
+                ),
+                // child: LiveIndicatorCard(child: child),
               );
             },
           ),
@@ -212,8 +229,10 @@ class _ProfileCardState extends State<ProfileCard>
           children: [
             _socialIcon('github', 'https://github.com/saurav-inde'),
             const SizedBox(width: 16),
-            _socialIcon('linkedin',
-                'https://www.linkedin.com/in/saurav-kumar-84082120b/'),
+            _socialIcon(
+              'linkedin',
+              'https://www.linkedin.com/in/saurav-kumar-84082120b/',
+            ),
             const SizedBox(width: 16),
             _socialIcon('leetcode', 'https://leetcode.com/u/sauravmiit/'),
           ],
@@ -245,8 +264,10 @@ class _ProfileCardState extends State<ProfileCard>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: const Color(0xff2b2b2c),
-            content: SmallText("${title.toLowerCase()} copied",
-                color: Colors.amberAccent),
+            content: SmallText(
+              "${title.toLowerCase()} copied",
+              color: Colors.amberAccent,
+            ),
             duration: const Duration(seconds: 1),
           ),
         );

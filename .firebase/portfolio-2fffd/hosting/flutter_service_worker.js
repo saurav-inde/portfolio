@@ -3,9 +3,9 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "19cf907726aa0789cfb7d511acfae7d8",
-"assets/AssetManifest.bin.json": "802cde8265e33c21b2f1e26aaf858f6a",
-"assets/AssetManifest.json": "f2c32789a5cc5677ff16510d5140e13e",
+const RESOURCES = {"assets/AssetManifest.bin": "71ff113015586f2144e23af6e4a0fffe",
+"assets/AssetManifest.bin.json": "23e065f82cd5954ae64eca1f99541ce5",
+"assets/AssetManifest.json": "7a810e087ce43536f9daa46593791728",
 "assets/assets/fonts/Montserrat-Black.ttf": "d414a87f1942b9c4ae40ef793f171dae",
 "assets/assets/fonts/Montserrat-BlackItalic.ttf": "e11421af6f75c947f1d2837f4e534611",
 "assets/assets/fonts/Montserrat-Bold.ttf": "c300fff4e4ae0ca994c58ac9f6639b19",
@@ -57,7 +57,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "19cf907726aa0789cfb7d511acfae7d8
 "assets/assets/svg/typescript.svg": "f5d15ff420f1d5793b460351b368e4be",
 "assets/assets/svg/ui.jpg": "ffa5ecb9d47e2511365475571b3b80eb",
 "assets/assets/svg/windows.svg": "4175ad2ef3c0188c22ab59650e8127a3",
-"assets/FontManifest.json": "45b92fa279bfd9c5e79f600ca455dade",
+"assets/FontManifest.json": "3b7eaeea43e738ed4a7c6d491621e187",
 "assets/fonts/MaterialIcons-Regular.otf": "65d77a4e55adaba24ef2e1174523e9b8",
 "assets/NOTICES": "5b9b2d57ce7e86bee22153087a4193f7",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
@@ -73,7 +73,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "19cf907726aa0789cfb7d511acfae7d8
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "favicon.png": "afb345eaf7b7ddd5e413da7c82160113",
 "flutter.js": "83d881c1dbb6d6bcd6b42e274605b69c",
-"flutter_bootstrap.js": "de10e20f8f7e34a579c8f487f765eaf9",
+"flutter_bootstrap.js": "3382b431ffe567b9589dfa4c5fec6bab",
 "icons/icon-192.png": "2e90c32941cd4b5feeb6f509518545c7",
 "icons/icon-512.png": "837dc442f2613fb43dfa04316a0045a1",
 "icons/icon-maskable-192.png": "2e90c32941cd4b5feeb6f509518545c7",
